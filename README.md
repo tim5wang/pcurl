@@ -44,4 +44,4 @@ simple pressure test using curl
 - -s 5 没5个请求打印一次
 - p 压测
 
-curl -L -X POST 'google.com?s={keyword}'
+curl -L -X POST 'google.com?s={{keyword}}'

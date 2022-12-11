@@ -1,0 +1,1 @@
+curl https://kaifa.baidu.com/searchPage?wd={{rust}}&module=SEARCH
