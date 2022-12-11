@@ -27,7 +27,6 @@ simple pressure test using curl
 ├── data.txt // csv 数据
 ├── main.go 
 └── go.mod // 包
-└── vendor/ // 离线的依赖
 └── requests_mac // bin
 └── requests_linux // bin
 ```
