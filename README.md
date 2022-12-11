@@ -13,7 +13,7 @@ simple pressure test using curl
 # requests 是一个简单的压测工具
 
 - [x] 基于 curl 命令，知道 curl 就能压测
-- [x] 支持 curl 当中占位符替换为 csv内内容，占位符和csv的header一一匹配
+- [x] 支持 curl 当中占位符替换为 csv内容，占位符和csv的header匹配
 - [x] 支持按照采样率打印请求和返回信息
 - [ ] 内嵌的界面
 - [ ] 压测结果的统计
