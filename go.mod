@@ -10,15 +10,6 @@ require (
 )
 
 require (
-	git.garena.com/common/gommon/crypt v0.0.0-20210211075301-867bb6bc3c33 // indirect
-	git.garena.com/shopee/common/jsonext v0.1.0 // indirect
-	git.garena.com/shopee/common/ulog v0.2.1 // indirect
-	git.garena.com/shopee/devops/golang_aegislib v0.0.10 // indirect
-	git.garena.com/shopee/platform/service-governance/observability/metric v1.0.9 // indirect
-	git.garena.com/shopee/platform/splog v1.4.10 // indirect
-	git.garena.com/shopee/platform/trace v0.1.0 // indirect
-	git.garena.com/shopee/platform/tracing v1.8.1 // indirect
-	git.garena.com/shopee/sp_protocol v1.3.5-0.20220106023056-dd80a25ee653 // indirect
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
