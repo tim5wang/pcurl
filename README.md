@@ -6,7 +6,7 @@ simple pressure test using curl
 - [x] Support curl to replace placeholders with content in csv, and match the headers of csv one by one
 - [x] Supports printing request and return information at sample rate
 - [ ] ineer web ui
-- [ ] statistics
+- [x] statistics
 - [ ] DAG or Workflow
 ----
 
@@ -16,7 +16,7 @@ simple pressure test using curl
 - [x] 支持 curl 当中占位符替换为 csv内容，占位符和csv的header匹配
 - [x] 支持按照采样率打印请求和返回信息
 - [ ] 内嵌的界面
-- [ ] 压测结果的统计
+- [x] 压测结果的统计
 - [ ] 工作流
 
 # 使用方法

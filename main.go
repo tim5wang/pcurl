@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +13,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"syscall"
+	"time"
 
 	"github.com/antlabs/pcurl"
 	"github.com/urfave/cli/v2"
@@ -85,7 +85,7 @@ func main() {
 			Usage:   "",
 			Action: func(c *cli.Context) error {
 				if file, err := os.OpenFile(curl, os.O_RDWR, 0666); err == nil {
-					body, e := ioutil.ReadAll(file)
+					body, e := io.ReadAll(file)
 					if e != nil {
 						e = fmt.Errorf("%v is can not parse as curl comand nor read as file, read err:%v", curl, e)
 						return e
@@ -106,8 +106,15 @@ func main() {
 				signal.Notify(sigterm, syscall.SIGINT, syscall.SIGTERM)
 				select {
 				case <-sigterm:
+					live = false
+					log.Printf("\n=== Pressure Test Summary ===")
+					log.Printf("Total Requests: %d", pressureStats.totalRequests)
+					log.Printf("Success: %d", pressureStats.successCount)
+					log.Printf("Failure: %d", pressureStats.failureCount)
+					log.Printf("Success Rate: %.2f%%", float64(pressureStats.successCount)/float64(pressureStats.totalRequests)*100)
+					log.Printf("Duration: %v", time.Since(pressureStats.startTime))
+					log.Printf("Requests Per Second: %.2f", float64(pressureStats.totalRequests)/time.Since(pressureStats.startTime).Seconds())
 				}
-				live = false
 				return nil
 			},
 		},
@@ -124,7 +131,17 @@ func main() {
 
 }
 
+type stats struct {
+	totalRequests int64
+	successCount  int64
+	failureCount  int64
+	startTime     time.Time
+}
+
+var pressureStats stats
+
 func pressure(filepath, curl string, r int, thread int) {
+	pressureStats = stats{startTime: time.Now()}
 	err := parseData(filepath)
 	if err != nil {
 		log.Printf("parse data error %v", err)
@@ -147,13 +164,16 @@ func pressure(filepath, curl string, r int, thread int) {
 					continue
 				}
 				resp, e := http.DefaultClient.Do(req)
+				atomic.AddInt64(&pressureStats.totalRequests, 1)
 				if e != nil {
+					atomic.AddInt64(&pressureStats.failureCount, 1)
 					fmt.Printf("err:%s\n", e)
 					continue
 				}
+				atomic.AddInt64(&pressureStats.successCount, 1)
 				defer resp.Body.Close()
 				if display > 0 && c%int64(display) == 0 {
-					result, _ := ioutil.ReadAll(resp.Body)
+					result, _ := io.ReadAll(resp.Body)
 					var caseNum int64
 					if len(dataParsed) > 0 {
 						caseNum = c % int64(len(dataParsed))
@@ -166,6 +186,14 @@ func pressure(filepath, curl string, r int, thread int) {
 		}()
 	}
 	wg.Wait()
+	duration := time.Since(pressureStats.startTime)
+	log.Printf("\n=== Pressure Test Summary ===")
+	log.Printf("Total Requests: %d", pressureStats.totalRequests)
+	log.Printf("Success: %d", pressureStats.successCount)
+	log.Printf("Failure: %d", pressureStats.failureCount)
+	log.Printf("Success Rate: %.2f%%", float64(pressureStats.successCount)/float64(pressureStats.totalRequests)*100)
+	log.Printf("Duration: %v", duration)
+	log.Printf("Requests Per Second: %.2f", float64(pressureStats.totalRequests)/duration.Seconds())
 }
 
 func parseData(filepath string) error {
